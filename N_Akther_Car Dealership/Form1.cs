@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,74 @@ namespace N_Akther_Car_Dealership
 
         int packageChoice;
 
+        decimal basePrice;
+        decimal packagePrice;
+        decimal subtotal;
+        decimal taxAmount;
+        decimal total;
+
         decimal taxRate = 0.08875m;
+
+        decimal nonePackagePrice = 0m;
+        decimal extrasPackagePrice = 2500m;
+        decimal luxuryPackagePrice = 5000m;
+
+        string configFile = "CarConfig.txt";
+
+        StreamReader sr;
+
+        public decimal TaxRate
+        {
+            get
+            {
+                return taxRate;
+            }
+
+            set
+            {
+                taxRate = value;
+            }
+        }
+
+        public decimal NonePackagePrice
+        {
+            get
+            {
+                return nonePackagePrice;
+            }
+
+            set
+            {
+                nonePackagePrice = value;
+            }
+        }
+
+        public decimal ExtrasPackagePrice
+        {
+            get
+            {
+                return extrasPackagePrice;
+            }
+
+            set
+            {
+                extrasPackagePrice = value;
+            }
+        }
+
+        public decimal LuxuryPackagePrice
+        {
+            get
+            {
+                return luxuryPackagePrice;
+            }
+
+            set
+            {
+                luxuryPackagePrice = value;
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -26,10 +94,45 @@ namespace N_Akther_Car_Dealership
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            bool fileGood = false;
+
             rdoNonePackage.Checked = true;
-           
 
             txtCustomerName.Focus();
+
+            do
+            {
+                try
+                {
+                    sr = File.OpenText(configFile);
+
+                    TaxRate = decimal.Parse(sr.ReadLine());
+
+                    NonePackagePrice = decimal.Parse(sr.ReadLine());
+
+                    ExtrasPackagePrice = decimal.Parse(sr.ReadLine());
+
+                    LuxuryPackagePrice = decimal.Parse(sr.ReadLine());
+
+                    sr.Close();
+
+                    fileGood = true;
+                }
+                catch
+                {
+                    MessageBox.Show("Problem reading file");
+
+                    OpenFileDialog ofd = new OpenFileDialog();
+
+                    ofd.Title = "Select Config File";
+
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        configFile = ofd.FileName;
+                    }
+                }
+
+            } while (fileGood == false);
         }
 
         private void rdoNonePackage_CheckedChanged(object sender, EventArgs e)
@@ -55,6 +158,7 @@ namespace N_Akther_Car_Dealership
                 packageChoice = LUXURY;
             }
         }
+
         private void btnQuit_Click(object sender, EventArgs e)
         {
             DialogResult buttonSelected;
@@ -86,45 +190,53 @@ namespace N_Akther_Car_Dealership
 
         private void btnCalculate_Click(object sender, EventArgs e)
         {
-            decimal basePrice;
-            decimal packagePrice = 0m;
-            decimal subtotal;
-            decimal taxAmount;
-            decimal total;
-
             bool priceGood;
 
-            priceGood = decimal.TryParse(txtBasePrice.Text, out basePrice);
+            priceGood = decimal.TryParse(txtBasePrice.Text,
+                                         out basePrice);
+
             switch (packageChoice)
             {
                 case NONE:
-                    packagePrice = 0m;
+                    packagePrice = NonePackagePrice;
                     break;
 
                 case EXTRAS:
-                    packagePrice = 2500m;
+                    packagePrice = ExtrasPackagePrice;
                     break;
 
                 case LUXURY:
-                    packagePrice = 5000m;
+                    packagePrice = LuxuryPackagePrice;
                     break;
             }
+
             if (priceGood)
             {
+                lstOutput.Items.Clear();
+
                 subtotal = basePrice + packagePrice;
 
-                taxAmount = subtotal * taxRate;
+                taxAmount = subtotal * TaxRate;
 
                 total = subtotal + taxAmount;
 
                 lstOutput.Items.Add("Customer Name: " +
                                     txtCustomerName.Text);
 
-                lstOutput.Items.Add("Base Price: " +
+                lstOutput.Items.Add("Type of Add-on: " +
+                                    packageChoice);
+
+                lstOutput.Items.Add("Base Vehicle Price: " +
                                     basePrice.ToString("C"));
 
-                lstOutput.Items.Add("Package Price: " +
+                lstOutput.Items.Add("Price of Add-on: " +
                                     packagePrice.ToString("C"));
+
+                lstOutput.Items.Add("Subtotal: " +
+                                    subtotal.ToString("C"));
+
+                lstOutput.Items.Add("Tax Rate: " +
+                                    TaxRate.ToString("P"));
 
                 lstOutput.Items.Add("Tax Amount: " +
                                     taxAmount.ToString("C"));
