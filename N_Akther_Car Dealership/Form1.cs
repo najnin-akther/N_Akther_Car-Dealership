@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace N_Akther_Car_Dealership
 {
-    public partial class frmCarDealership : Form
+    public partial class Form1 : Form
     {
         const int NONE = 1;
         const int EXTRAS = 2;
@@ -19,34 +19,42 @@ namespace N_Akther_Car_Dealership
         int packageChoice;
 
         decimal taxRate = 0.08875m;
-        public frmCarDealership()
+        public Form1()
         {
             InitializeComponent();
         }
 
-        private void frmCarDealership_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
             rdoNonePackage.Checked = true;
-            packageChoice = NONE;
+           
 
             txtCustomerName.Focus();
         }
 
         private void rdoNonePackage_CheckedChanged(object sender, EventArgs e)
         {
-            packageChoice = NONE;
+            if (rdoNonePackage.Checked)
+            {
+                packageChoice = NONE;
+            }
         }
 
         private void rdoExtraPackage_CheckedChanged(object sender, EventArgs e)
         {
-            packageChoice = EXTRAS;
+            if (rdoExtraPackage.Checked)
+            {
+                packageChoice = EXTRAS;
+            }
         }
 
         private void rdoLuxuryPackage_CheckedChanged(object sender, EventArgs e)
         {
-            packageChoice = LUXURY;
+            if (rdoLuxuryPackage.Checked)
+            {
+                packageChoice = LUXURY;
+            }
         }
-
         private void btnQuit_Click(object sender, EventArgs e)
         {
             DialogResult buttonSelected;

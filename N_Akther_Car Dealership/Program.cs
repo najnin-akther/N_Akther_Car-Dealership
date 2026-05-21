@@ -16,7 +16,7 @@ namespace N_Akther_Car_Dealership
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmCarDealership());
+            Application.Run(new Form1());
         }
     }
 }

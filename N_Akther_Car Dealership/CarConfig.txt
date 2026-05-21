@@ -1,0 +1,8 @@
+﻿# none package price
+0
+# extras package price
+1500
+# luxury package price
+3000
+# tax rate
+0.08875
